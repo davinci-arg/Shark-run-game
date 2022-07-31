@@ -4,8 +4,5 @@ using UnityEngine;
 
 public class Shark : MonoBehaviour
 {
-    [SerializeField] private PoolBabySharks _poolBabySharks;
-
-    public PoolBabySharks PoolBabySharks => _poolBabySharks;
-
+    
 }
