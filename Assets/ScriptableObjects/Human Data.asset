@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4137b9f4df4bcd34e99d0332468b0e54, type: 3}
   m_Name: Human Data
   m_EditorClassIdentifier: 
-  _safeDistance: 8
-  _speedOfSwim: 4
-  _bloodEffect: {fileID: 3119561307809327148, guid: 42a6e58d84621b94fbe19fe3ec794107, type: 3}
+  _safeDistance: 12
+  _speedOfSwim: 5
+  _bloodEffect: {fileID: 2108346310285861744, guid: 819f607767e3e8549806acaef167e7d6, type: 3}
+  _swimEffect: {fileID: 7737431704354064456, guid: e3d8dfba6a125ba40a609b2e64faeb49, type: 3}
+  _angleSwimRange: 11.5

@@ -10,10 +10,13 @@ public class PlayerSharkAnimation : Player
     [SerializeField] private int _numberOfScoresMultipleForRotationOfShark;
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private float _rotationTime;
+    [SerializeField] private float _timeWaitRespawn;
     [SerializeField] private ParticleSystem _effectOfHappiness;
 
-    private bool _canRotating;
-    private ParticleSystem _happiness;
+    private bool _canRotation;
+    private int _counterEatenPeople;
+    private ParticleSystem _respawnEffect;
+    private WaitForSeconds _respawnTime;
 
     private void OnEnable()
     {
@@ -27,26 +30,29 @@ public class PlayerSharkAnimation : Player
 
     private void Start()
     {
-        _canRotating = true;
-        _happiness = Instantiate(_effectOfHappiness, transform.position, Quaternion.identity, transform);
+        _counterEatenPeople = 0;
+        _canRotation = true;
+        _respawnTime = new WaitForSeconds(_timeWaitRespawn);
+        _respawnEffect = Instantiate(_effectOfHappiness, transform.position, Quaternion.identity, transform);
     }
 
     private void Rotate()
     {
-        if (_canRotating && UIManager.Instance.UIMainScore.CurrentScores % _numberOfScoresMultipleForRotationOfShark == 0)
+        _counterEatenPeople++;
+
+        if (_canRotation && _counterEatenPeople % _numberOfScoresMultipleForRotationOfShark == 0)
         {
             StartCoroutine(StartRotating());
         }
-        if (UIManager.Instance.UIMainScore.CurrentScores % _numberOfScoresMultipleForChangeOfShark == 0)
+        if (_counterEatenPeople % _numberOfScoresMultipleForChangeOfShark == 0)
         {
-            _happiness.Play();
-            PlayerShark.ChangeShark();
+            StartCoroutine(Respawning());
         }
     }
 
     private IEnumerator StartRotating()
     {
-        _canRotating = false;
+        _canRotation = false;
         Vector3 startRotation = Vector3.zero;
         Vector3 endRotation = new Vector3(0f, 0f, 360f);
         float startTime = Time.time;
@@ -54,13 +60,19 @@ public class PlayerSharkAnimation : Player
 
         while (timeComplete < _rotationTime)
         {
-            timeComplete = (Time.time - startTime) / _rotationTime;
+            timeComplete = (Time.time - startTime) / _rotationTime;           
             Vector3 rotation = Vector3.Slerp(startRotation, endRotation, timeComplete);
-            PlayerShark.MainShark.transform.eulerAngles = rotation;
+            PlayerShark.MainShark.transform.eulerAngles += rotation;
             yield return null;
         }
 
-        _canRotating = true;
+        _canRotation = true;
     }
     
+    private IEnumerator Respawning()
+    {
+        _respawnEffect.Play();
+        yield return _respawnTime;      
+        PlayerShark.ChangeShark();
+    }
 }

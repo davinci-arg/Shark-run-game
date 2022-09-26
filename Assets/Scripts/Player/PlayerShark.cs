@@ -8,16 +8,14 @@ public class PlayerShark : Player
     [SerializeField] private PoolBabySharks _poolBabySharks;
     [SerializeField] private Shark _mainShark;
     [SerializeField] private Shark[] _templatesSharks;
-    
-    //[SerializeField] private PlayerSharkTrigger _sharkPlayerTrigger;
+    [SerializeField] private Transform _targetForBabyShark;
 
     private Queue<Shark> _sharks;
-
-    //public int EatenPeopleCounter { get; private set; }
 
     public IReadOnlyCollection<Shark> TemplatesSharks => _templatesSharks;
     public PoolBabySharks PoolBabySharks => _poolBabySharks;
     public Shark MainShark => _mainShark;
+    public Transform TargetForBabyShark => _targetForBabyShark;
 
     private void Start()
     {     
@@ -44,9 +42,9 @@ public class PlayerShark : Player
         if (_sharks.TryDequeue(out Shark currentShark))
         {
             _mainShark.gameObject.SetActive(false);
+            currentShark.transform.rotation = _mainShark.transform.rotation;
             _mainShark = currentShark;
-            currentShark.gameObject.SetActive(true);
-            
+            currentShark.gameObject.SetActive(true);    
         }
     }
 }

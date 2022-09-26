@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class BabySharkPlace : MonoBehaviour
 {
-    public bool IsEmpty => _babyShark == null;
-
     private BabyShark _babyShark;
+
+    public bool IsEmpty => _babyShark == null;
+    public BabyShark BabyShark => _babyShark;
 
     public void AddBabyShark(BabyShark babyShark) => _babyShark = babyShark;
 

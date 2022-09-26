@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 using UnityEngine.Events;
 
 [RequireComponent(typeof(BoxCollider))]
@@ -9,15 +8,35 @@ public class BabyShark : MonoBehaviour
 {
     [SerializeField] private BabySharkScriptableSkillData _babySharkSkillData;
 
-    private Transform _placeTransform;
     private BoxCollider _boxCollider;
+    private bool _canLookAtShark;
+    private PlayerShark _playerShark;
 
     public event UnityAction HasSailed;
+
+    private void OnEnable()
+    {
+        HasSailed += StopLookAtTarget;
+    }
+
+    private void OnDisable()
+    {
+        HasSailed -= StopLookAtTarget;
+    }
 
     private void Start()
     {
         _boxCollider = GetComponent<BoxCollider>();
-        HasSailed += StopSwimAnimation;
+        _canLookAtShark = false;
+    }
+
+    private void Update()
+    {
+        if (_canLookAtShark)
+        {
+            Vector3 directionFollow = _playerShark.TargetForBabyShark.position - transform.position;
+            transform.forward = Vector3.MoveTowards(transform.forward, directionFollow, _babySharkSkillData.SensitivityFollow * Time.deltaTime);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -25,26 +44,12 @@ public class BabyShark : MonoBehaviour
         if (other.TryGetComponent<PlayerShark>(out PlayerShark playerShark))
         {
             _boxCollider.enabled = false;
-            playerShark.PoolBabySharks.AddInPool(this);           
+            playerShark.PoolBabySharks.AddInPool(this);
+            _playerShark = playerShark;
+            _canLookAtShark = true;
         }
     }
 
-    private void StopSwimAnimation()
-    {
-        print("Eazse");
-       // transform.forward = _placeTransform.forward;
-    }
+    public void StopLookAtTarget() => _canLookAtShark = false;
 
-   ///private void Swim(PlayerShark playerShark)
-   ///{
-   ///    transform.DOLocalMove(playerShark.transform.localPosition, _babySharkSkillData.SpeedOfSwiming)
-   ///        .OnComplete(() => playerShark.PoolBabySharks.AddInPool(this));
-   ///}
-   ///
-   ///public void Swim(Transform placeTransform)
-   ///{
-   ///    print("BabyShark");
-   ///    _placeTransform = placeTransform;
-   ///    transform.DOLocalMove(placeTransform.localPosition, _babySharkSkillData.SpeedOfSwiming).OnComplete(()=> HasSailed?.Invoke());
-   ///}
 }

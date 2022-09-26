@@ -8,5 +8,4 @@ public class CrowdHumans : MonoBehaviour
 
     public PlayerShark Player => _playerShark;
 
-
 }

@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: BabySharkDataSkills
   m_EditorClassIdentifier: 
   _speedOfSwimming: 0.2
+  _sensitivityFollow: 9

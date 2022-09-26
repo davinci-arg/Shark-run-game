@@ -5,12 +5,11 @@ using UnityEngine;
 public class Island : MonoBehaviour
 {
     [SerializeField] private Transform [] _restPlaces;
-    [SerializeField] private float _radiusDistance;
+    [SerializeField] private float _catchDistance;
 
     private PlayerShark _playerShark;
     private bool _isEmpty;
     private Vector3[] _restPositions;
-
 
     private void Start()
     {
@@ -26,9 +25,8 @@ public class Island : MonoBehaviour
 
     private void Update()
     {
-        if (_isEmpty && Vector3.Distance(transform.position, _playerShark.transform.position) < _radiusDistance)
+        if (_isEmpty && Vector3.Distance(transform.position, _playerShark.transform.position) < _catchDistance)
         {
-            print("Closest");
             _isEmpty = false;
             _playerShark.PoolBabySharks.GetFromPool(_restPositions);
         }

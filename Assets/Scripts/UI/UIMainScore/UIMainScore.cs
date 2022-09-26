@@ -9,12 +9,10 @@ public class UIMainScore : MonoBehaviour
 
     private void OnDisable()
     {
-        //GameManager.Instance.PlayerShark.HasEatenHuman -= IncrementScore;
         GameManager.Instance.PlayerShark.PlayerSharkTrigger.HasEatenPeople -= IncrementScore;
     }
     private void Start()
     {
-        //GameManager.Instance.PlayerShark.HasEatenHuman += IncrementScore;
         GameManager.Instance.PlayerShark.PlayerSharkTrigger.HasEatenPeople += IncrementScore;
         CurrentScores = GetScores();
     }

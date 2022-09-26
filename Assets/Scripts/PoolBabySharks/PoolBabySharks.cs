@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using DG.Tweening;
-using System;
 
 public class PoolBabySharks : MonoBehaviour
 {
@@ -11,8 +10,9 @@ public class PoolBabySharks : MonoBehaviour
     [SerializeField] private int _height;
     [SerializeField] private float _widthStep;
     [SerializeField] private float _heightStep;
-    [SerializeField] private float _durationMovement;
-    [SerializeField] private Transform _anchorOfPool;
+    [SerializeField] private float _velocityEnterInPool;
+    [SerializeField] private float _velocityExitFromPool;
+    [SerializeField] private Transform _lookTarget;
     [SerializeField] private PlayerShark _playerShark;
 
     [Header("DrawGizmos")]
@@ -21,25 +21,18 @@ public class PoolBabySharks : MonoBehaviour
     private List<Vector3> _positionsInPool;
     private List<BabySharkPlace> _poolPlaces;
 
-    private Action _moved;
+    public IReadOnlyList<BabySharkPlace> PoolPlaces => _poolPlaces;
 
     private void Start()
     {
         CreatePoolPlaces();
     }
 
-    private void Update()
-    {
-        _anchorOfPool.transform.forward = _playerShark.MainShark.transform.forward;
-
-        
-        //transform.LookAt(_player.MainShark.transform);
-    }
-
     private void OnDrawGizmos()
     {
         AllocatePositionsInPool();
         Gizmos.color = Color.magenta;
+        Gizmos.DrawSphere(_lookTarget.position, _radius);
 
         foreach (Vector3 point in _positionsInPool)
         {
@@ -80,10 +73,12 @@ public class PoolBabySharks : MonoBehaviour
     {
         var poolPlace = _poolPlaces.FirstOrDefault(place => place.IsEmpty == true);
 
-        if (poolPlace != null)
+        if (poolPlace.IsEmpty)
         {
+            Vector3 directionBeforAdding = _playerShark.MainShark.transform.position - babyShark.transform.position;
+            babyShark.transform.forward = directionBeforAdding;
             babyShark.transform.SetParent(transform);
-            babyShark.transform.DOLocalMove(poolPlace.transform.localPosition, _durationMovement)
+            babyShark.transform.DOLocalMove(poolPlace.transform.localPosition, _velocityEnterInPool)
             .OnComplete(() => SetDirectionInPool());
             poolPlace.AddBabyShark(babyShark);
         }
@@ -106,14 +101,9 @@ public class PoolBabySharks : MonoBehaviour
             {
                 BabyShark babyShark = poolPlace.GetBabyShark();
                 babyShark.transform.parent = null;
-                babyShark.transform.DOMove(newPositions[i], _durationMovement);
+                babyShark.StopLookAtTarget();
+                babyShark.transform.DOMove(newPositions[i], _velocityExitFromPool);
             }
         }
     }
-
-    //private void MoveBabyShark(BabyShark babyShark, Vector3 toPosition)
-    //{
-    //    babyShark.transform.DOLocalMove(poolPlace.transform.localPosition, _speedMovementToPool)
-    //        .OnComplete(() => SetDirectionInPool());
-    //}
 }

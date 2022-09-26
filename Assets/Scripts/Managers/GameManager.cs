@@ -5,7 +5,6 @@ using UnityEngine;
 public class GameManager : PersistentSingleton<GameManager>
 {
     [SerializeField] private PlayerShark _playerShark;
-    //[SerializeField] private Player _Player;
     
     private const int _frameRate = 30;
 

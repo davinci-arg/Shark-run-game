@@ -8,5 +8,4 @@ public class UIManager : PersistentSingleton<UIManager>
 
     public UIMainScore UIMainScore => _uIMainScore;
 
-
 }

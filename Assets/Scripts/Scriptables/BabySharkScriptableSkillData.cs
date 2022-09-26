@@ -7,6 +7,8 @@ public class BabySharkScriptableSkillData : ScriptableObject
 {
     [Header("Skills:")]
     [SerializeField] private float _speedOfSwimming;
+    [SerializeField] private float _sensitivityFollow;
 
     public float SpeedOfSwiming => _speedOfSwimming;
+    public float SensitivityFollow => _sensitivityFollow;
 }
